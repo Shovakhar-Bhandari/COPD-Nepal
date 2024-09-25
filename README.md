@@ -36,5 +36,17 @@ Chronic Obstructive Pulmonary Disease (COPD) is a significant health issue in Ne
 7. **Frequent Respiratory Infections**: Increased susceptibility to colds, flu, and other infections.
 8. **Cyanosis**: A bluish tint to the lips or fingertips, indicating low oxygen levels.
 
+
+
+# References for this study
+- https://www.dovepress.com/factors-associated-with-chronic-obstructive-pulmonary-diseases-in-nepa-peer-reviewed-fulltext-article-COPD
+- https://pubmed.ncbi.nlm.nih.gov/35615818/
+- https://www.tandfonline.com/doi/full/10.2147/COPD.S268110
+- https://www.who.int/home/search-results?indexCatalogue=genericsearchindex1&searchQuery=Chronic%20Obstructive%20Pulmonary%20Disease&wordsMode=AnyWord
+- https://www.worldbank.org/en/search?q=Chronic+Obstructive+Pulmonary+Diseas
+- https://www.tandfonline.com/doi/pdf/10.2147/COPD.S268110
+- https://github.com/phenoflow/Chronic-Obstructive-Pulmonary-Disease---9387f040-1873-11ef-9de4-4d4ea830ad16?tab=readme-ov-file
+
+
 ### Conclusion
 The burden of COPD in Nepal is shaped by a combination of environmental, lifestyle, socioeconomic, health, and geographic factors. Awareness and preventive measures are essential for managing and reducing the prevalence of COPD symptoms. Improving air quality, promoting smoking cessation, and increasing public health education can significantly impact the health of individuals at risk.
