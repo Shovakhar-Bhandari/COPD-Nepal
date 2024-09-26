@@ -1,62 +1,50 @@
+import streamlit as st
 import pandas as pd
 import pickle
-import streamlit as st
 
-# Load the trained model
-model_path = './Best_Random_Forest_Model.pkl'
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
+with open('Best_Random_Forest_Model.pkl', 'rb') as model_file:
+    model = pickle.load(model_file)
 
-# Streamlit App
-def main():
-    st.title("COPD Prediction Dashboard")
-
-    # User input
-    st.sidebar.header("User Input")
-
-    age = st.sidebar.slider("Age", 30, 80, 50)
-    gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
-    bmi = st.sidebar.slider("BMI", 10, 40, 25)
-    smoking_status = st.sidebar.selectbox("Smoking Status", ["Current", "Former", "Never"])
-    biomass_fuel_exposure = st.sidebar.selectbox("Biomass Fuel Exposure", ["Yes", "No"])
-    occupational_exposure = st.sidebar.selectbox("Occupational Exposure", ["Yes", "No"])
-    family_history = st.sidebar.selectbox("Family History of COPD", ["Yes", "No"])
-    air_pollution_level = st.sidebar.slider("Air Pollution Level", 0, 300, 50)
-    respiratory_infections = st.sidebar.selectbox("Respiratory Infections in Childhood", ["Yes", "No"])
-    location = st.sidebar.selectbox("Location", ["Kathmandu", "Pokhara", "Biratnagar", "Lalitpur", "Birgunj", "Chitan", "Hetauda", "Dharan", "Butwal"])
-
-    # Process the input data
-    input_data = {
-        'Age': [age],
-        'Biomass_Fuel_Exposure': [biomass_fuel_exposure],
-        'Occupational_Exposure': [occupational_exposure],
-        'Family_History_COPD': [family_history],
-        'BMI': [bmi],
-        'Air_Pollution_Level': [air_pollution_level],
-        'Respiratory_Infections_Childhood': [respiratory_infections],
-        'Smoking_Status_encoded': [smoking_status],
-        'Gender_': [gender]       
-    }
-
-    # Convert the data to a dataframe
-    input_df = pd.DataFrame(input_data)
-
-    # Encoding
-    input_df['Gender_'] = input_df["Gender_"].map({'Male': 1, 'Female': 0})
-    input_df['Smoking_Status_encoded'] = input_df['Smoking_Status_encoded'].map({'Current': 1, 'Former': 0.5, 'Never': 0})
-    input_df['Biomass_Fuel_Exposure'] = input_df["Biomass_Fuel_Exposure"].map({'Yes': 1, 'No': 0})
-    input_df['Occupational_Exposure'] = input_df["Occupational_Exposure"].map({'Yes': 1, 'No': 0})
-    input_df['Family_History_COPD'] = input_df["Family_History_COPD"].map({'Yes': 1, 'No': 0})
-    input_df['Respiratory_Infections_Childhood'] = input_df["Respiratory_Infections_Childhood"].map({'Yes': 1, 'No': 0})
-
-    # Prediction
+def predict(input_data):
+    input_df = pd.DataFrame(input_data, index=[0])
     prediction = model.predict(input_df)
-    if prediction[0] == 1:
-        st.write("### Prediction: COPD Detected")
-        st.write("This indicates that the model predicts the presence of Chronic Obstructive Pulmonary Disease (COPD).")
-    else:
-        st.write("### Prediction: No COPD Detected")
-        st.write("This indicates that the model predicts the absence of Chronic Obstructive Pulmonary Disease (COPD).")
+    return prediction[0]
 
-if __name__ == "__main__":
-    main()
+st.title("COPD Diagnosis Prediction")
+
+age = st.number_input("Age", min_value=0, max_value=120, value=30)
+biomass_fuel_exposure = st.selectbox("Biomass Fuel Exposure", [0, 1])
+occupational_exposure = st.selectbox("Occupational Exposure", [0, 1])
+family_history_copd = st.selectbox("Family History of COPD", [0, 1])
+bmi = st.number_input("BMI", min_value=10.0, max_value=60.0, value=25.0)
+air_pollution_level = st.number_input("Air Pollution Level", min_value=0, value=50)
+respiratory_infections_childhood = st.selectbox("Respiratory Infections in Childhood", [0, 1])
+smoking_status_encoded = st.number_input("Smoking Status (Encoded)", min_value=0.0, max_value=1.0, value=0.0)
+gender_encoded = st.selectbox("Gender (Encoded)", [0, 1])  
+
+
+locations = ['Biratnagar', 'Butwal', 'Chitwan', 'Dharan', 'Hetauda', 'Kathmandu', 'Lalitpur', 'Nepalgunj', 'Pokhara']
+location_features = {f'Location_{loc}': st.checkbox(f"Location: {loc}") for loc in locations}
+
+age_bmi_interaction = age * bmi
+
+# Prepare the input data for prediction
+input_data = {
+    'Age': age,
+    'Biomass_Fuel_Exposure': biomass_fuel_exposure,
+    'Occupational_Exposure': occupational_exposure,
+    'Family_History_COPD': family_history_copd,
+    'BMI': bmi,
+    'Air_Pollution_Level': air_pollution_level,
+    'Respiratory_Infections_Childhood': respiratory_infections_childhood,
+    'Smoking_Status_encoded': smoking_status_encoded,
+    'Gender_encoded': gender_encoded,
+    'Age_BMI_Interaction': age_bmi_interaction,
+}
+
+for loc in locations:
+    input_data[f'Location_{loc}'] = int(location_features[f'Location_{loc}'])
+
+if st.button("Predict"):
+    prediction = predict(input_data)
+    st.write("Prediction:", "COPD" if prediction == 1 else "No COPD")
